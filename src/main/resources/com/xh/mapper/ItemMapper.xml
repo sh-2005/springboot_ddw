@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xh.dao.ItemDao">
+
+    <resultMap type="com.xh.entity.Item" id="queryAllMap">
+        <id column="id" property="id"/>
+        <result column="book_name" property="bookName"/>
+        <result column="book_src" property="bookSrc"/>
+        <result column="price" property="price"/>
+        <result column="count" property="count"/>
+        <result column="amount" property="amount"/>
+        <result column="book_id" property="bookId"/>
+        <result column="order_id" property="orderId"/>
+        <association property="book" javaType="com.xh.entity.Book" >
+            <id column="bId" property="id"/>
+            <result column="bBookName" property="bookName"/>
+            <result column="bSrc" property="src"/>
+            <result column="bPrice" property="price"/>
+            <result column="bDpPrice" property="ddPrice"/>
+        </association>
+    </resultMap>
+
+    <insert id="add" parameterType="com.xh.entity.Item">
+    insert into d_item values(#{id},#{bookName},#{bookSrc},#{price},#{count,jdbcType=VARCHAR},#{amount},#{bookId},#{orderId})
+    </insert>
+
+    <select id="queryOrderId" parameterType="String" resultMap="queryAllMap">
+	select a.id,a.book_name,a.book_src ,a.price,a.count,a.amount,a.book_id ,a.order_id,
+	b.id bId,b.book_name bBookName,b.src bSrc,b.price bPrice,b.dd_price bDpPrice
+	from d_item a left join d_book b
+	on a.book_id = b.id
+	where a.order_id = #{id}
+</select>
+
+
+</mapper>

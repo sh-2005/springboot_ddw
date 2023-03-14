@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xh.dao.UserDao">
+<!-- 注册 -->
+<insert id="zhuce" parameterType="com.xh.entity.User" >
+insert into d_user values(#{id},#{nickName},#{email},#{password},#{status},#{emailCode},#{registTime},#{salt})
+</insert>
+
+<!-- 登录  -->
+<select id="selectOne" resultType="com.xh.entity.User" parameterType="String">
+select id,nick_name nickName,email,password,status,regist_time registTime,email_code emailCode ,salt 
+from d_user
+where email = #{email}
+</select>
+
+
+<!-- 修改 -->
+	<update id="xiugai" parameterType="com.xh.entity.User">
+		update d_user
+			<set>
+				<if test="nickName!=null">nick_name=#{nickName},</if>
+				<if test="email!=null">email=#{email},</if>
+				<if test="password!=null">password=#{password},</if>
+				<if test="status!=null">status=#{status},</if>
+				<if test="registTime!=null">regist_time=#{registTime},</if>
+				<if test="emailCode!=null">email_code=#{emailCode},</if>
+				<if test="salt!=null">salt=#{salt},</if>
+			</set>
+		where id=#{id}
+	</update>
+<!-- 查所有 -->
+<select id="queryAll" resultType="com.xh.entity.User">
+select id,nick_name nickName,email,password,status,regist_time registTime,email_code emailCode ,salt 
+from d_user
+</select>
+
+
+</mapper>

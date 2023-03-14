@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xh.dao.BookDao">
+    <sql id="querySqls">
+		b.id,b.book_name bookName,b.author,b.price,b.dd_price ddPrice,b.company,
+		b.publish_time publishTime,b.public_count publicCount,b.isbn,b.print_time printTime,
+		b.sale_count saleCount,b.cate_id cateId,b.recommend,b.src,b.stock,
+		b.content_abstract contentAbstract,b.author_abstract authorAbstract,b.director,b.media_commentary mediaCommentary,
+		b.paper,b.pack,b.sizes,b.page_num pageNum,b.impression,b.edition
+	</sql>
+
+    <sql id="querySql">
+		id,book_name bookName,author,price,dd_price ddPrice,company,
+		publish_time publishTime,public_count publicCount,isbn,print_time printTime,
+		sale_count saleCount,cate_id cateId,recommend,src,stock,
+		content_abstract contentAbstract,author_abstract authorAbstract,director,media_commentary mediaCommentary,
+		paper,pack,sizes,page_num pageNum,impression,edition
+	</sql>
+
+    <resultMap type="com.xh.entity.Book" id="queryAllMap">
+        <id column="sid" property="id"/>
+        <id column="sCateId" property="cateId"/>
+        <result column="sBookName" property="bookName"/>
+        <result column="sAuthor" property="author"/>
+        <result column="sPrice" property="price"/>
+        <result column="sDdprice" property="ddPrice"/>
+        <result column="sCompany" property="company"/>
+        <result column="sPublishTime" property="publishTime"/>
+        <result column="sPublicCount" property="publicCount"/>
+        <result column="sIsbn" property="isbn"/>
+        <result column="sPrintTime" property="printTime"/>
+        <result column="sSaleCount" property="saleCount"/>
+        <result column="sRecommed" property="recommend"/>
+        <result column="sSrc" property="src"/>
+        <result column="sStock" property="stock"/>
+        <result column="sContentAbstract" property="contentAbstract"/>
+        <result column="sAuthorAbstract" property="authorAbstract"/>
+        <result column="sDirector" property="director"/>
+        <result column="sMediaCommentary" property="mediaCommentary"/>
+        <result column="sPaper" property="paper"/>
+        <result column="sPack" property="pack"/>
+        <result column="sSizes" property="sizes"/>
+        <result column="sPageNum" property="pageNum"/>
+        <result column="sImpression" property="impression"/>
+        <result column="sEdition" property="edition"/>
+        <association property="category" javaType="com.xh.entity.Category" >
+            <id column="cid" property="id"/>
+            <result column="cCateName" property="cateName"/>
+            <result column="cCount" property="count"/>
+            <result column="cParentId" property="parentId"/>
+            <result column="cLevels" property="levels"/>
+        </association>
+    </resultMap>
+
+    <select id="findAll" resultMap="queryAllMap">
+    select s.id sid,s.book_name sBookName,s.author sAuthor,s.price sPrice,s.dd_price sDdprice, s.company sCompany,s.publish_time sPublishTime,s.public_count
+        sPublicCount,s.isbn sIsbn,s.print_time sPrintTime,s.sale_count sSaleCount,s.cate_id sCateId,s.recommend sRecommed,s.src sSrc,s.stock sStock,
+        s.content_abstract sContentAbstract,s.author_abstract sAuthorAbstract,s.director sDirector,s.media_commentary	 sMediaCommentary,s.paper sPaper,s.pack sPack,
+        s.sizes sSizes,s.page_num sPageNum,s.impression sImpression,s.edition sEdition,
+        c.id cid,c.cate_name cCateName,c.count cCount,c.parent_id cParentId,c.levels cLevels
+        from d_book s left join d_category c
+        on s.cate_id=c.id
+    </select>
+
+    <select id="queryByBookCounts" resultMap="queryAllMap" parameterType="String">
+		select s.id sid,s.book_name sBookName,s.author sAuthor,s.price sPrice,s.dd_price sDdprice, s.company sCompany,s.publish_time sPublishTime,s.public_count
+        sPublicCount,s.isbn sIsbn,s.print_time sPrintTime,s.sale_count sSaleCount,s.cate_id sCateId,s.recommend sRecommed,s.src sSrc,s.stock sStock,
+        s.content_abstract sContentAbstract,s.author_abstract sAuthorAbstract,s.director sDirector,s.media_commentary	 sMediaCommentary,s.paper sPaper,s.pack sPack,
+        s.sizes sSizes,s.page_num sPageNum,s.impression sImpression,s.edition sEdition,
+        c.id cid,c.cate_name cCateName,c.count cCount,c.parent_id cParentId,c.levels cLevels
+        from d_book s left join d_category c
+        on s.cate_id=c.id
+		where c.id=#{id}
+	</select>
+
+
+    <select id="selectOne" parameterType="String" resultType="com.xh.entity.Book">
+        select <include refid="querySql"/> from d_book where id=#{id}
+    </select>
+
+    <insert id="insert" parameterType="com.xh.entity.Book">
+ 	insert into d_book values(#{id},#{bookName},#{author},#{src},#{company},
+		#{publishTime},#{edition},#{printTime},#{impression},#{isbn},#{publicCount},
+		#{pageNum},#{sizes},#{paper},#{pack},#{price},#{ddPrice},#{recommend},
+		#{contentAbstract},#{authorAbstract},#{director},#{mediaCommentary},#{cateId},#{saleCount},#{stock})
+    </insert>
+
+    <!-- 后台:修改所有图书 -->
+    <update id="update" parameterType="com.xh.entity.Book">
+        update d_book
+        <set>
+            <if test="bookName!=null">book_name=#{bookName},</if>
+            <if test="author!=null">author=#{author},</if>
+            <if test="price!=null">price=#{price},</if>
+            <if test="ddPrice!=null">dd_price=#{ddPrice},</if>
+            <if test="company!=null">company=#{company},</if>
+            <if test="publishTime!=null">publish_time=#{publishTime},</if>
+            <if test="publicCount!=null">public_count=#{publicCount},</if>
+            <if test="isbn!=null">isbn=#{isbn},</if>
+            <if test="printTime!=null">print_time=#{printTime},</if>
+            <if test="saleCount!=null">sale_count=#{saleCount},</if>
+            <if test="cateId!=null">cate_id=#{cateId},</if>
+            <if test="recommend!=null">recommend=#{recommend},</if>
+            <if test="src!=null">src=#{src},</if>
+            <if test="stock!=null">stock=#{stock},</if>
+            <if test="contentAbstract!=null">content_abstract=#{contentAbstract},</if>
+            <if test="authorAbstract!=null">author_abstract=#{authorAbstract},</if>
+            <if test="director!=null">director=#{director},</if>
+            <if test="mediaCommentary!=null">media_commentary=#{mediaCommentary},</if>
+            <if test="paper!=null">paper=#{paper},</if>
+            <if test="pack!=null">pack=#{pack},</if>
+            <if test="sizes!=null">sizes=#{sizes},</if>
+            <if test="pageNum!=null">page_num=#{pageNum},</if>
+            <if test="impression!=null">impression=#{impression},</if>
+            <if test="edition!=null">edition=#{edition}</if>
+        </set>
+        where id=#{id}
+    </update>
+    <!-- 后台:删除图书 -->
+    <delete id="delete" parameterType="String">
+	delete from d_book where id=#{id}
+	</delete>
+
+     <!--后台：模糊查询图书-->
+    <select id="queryByLike" resultType="com.xh.entity.Book">
+        select id,book_name bookName,author,price,dd_price ddPrice,company,
+        publish_time publishTime,public_count publicCount,isbn,print_time printTime,
+        sale_count saleCount,cate_id cateId,recommend,src,stock,content_abstract,
+        author_abstract,director,media_commentary,paper,pack,sizes,page_num,
+        impression,edition
+        from d_book
+        <where>
+            <if test="key=='bookName'">
+                book_name like concat('%',#{content},'%')
+            </if>
+            <if test="key=='author'">
+                author like concat('%',#{content},'%')
+            </if>
+            <if test="key=='company'">
+                company like concat('%',#{content},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--前台:编辑推荐-->
+    <select id="queryRecommend" resultType="com.xh.entity.Book">
+      select <include refid="querySql"/>
+      from d_book order by rand() limit 2
+    </select>
+
+    <!--前台:热销图书-->
+    <select id="queryHot" resultType="com.xh.entity.Book">
+        select  <include refid="querySql"/> from d_book
+        order by sale_count desc limit 8
+    </select>
+    <!--前台:最新上架-->
+    <select id="queryNew" resultType="com.xh.entity.Book">
+        select  <include refid="querySql"/> from d_book
+        order by print_time desc limit 8
+    </select>
+    <!--前台:新书热卖-->
+    <select id="querynewHot" resultType="com.xh.entity.Book">
+        select  <include refid="querySql"/> from d_book
+		order by print_time desc,sale_count desc limit 8
+    </select>
+    <!--前台:新书热卖二级页面展示图书-->
+    <select id="queryByCidAndSid" resultType="com.xh.entity.Book">
+        select <include refid="querySqls"/>
+        from d_book b left join d_category c
+        on b.cate_id=c.id
+        where c.parent_id=#{cid}
+        <if test="sid!=null">
+            and c.id=#{sid}
+        </if>
+        limit #{start},#{rows}
+    </select>
+    <!-- 前台:查询图书总条数 -->
+    <select id="queryByCidAndSidCount" resultType="Integer">
+        select count(b.id)
+        from d_book b left join d_category c
+        on b.cate_id=c.id
+        where c.parent_id=#{cid}
+        <if test="sid!=null">
+            and c.id=#{sid}
+        </if>
+    </select>
+
+</mapper>
